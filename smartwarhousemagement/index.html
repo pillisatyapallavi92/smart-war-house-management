@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusWMS — Autonomous Smart Warehouse Operations & Decision Platform</title>
+  <meta name="description" content="Next-Gen Autonomous Smart Warehouse Management & Order Fulfillment Platform with Intelligent Decision Matrix, 2D Digital Twin, TSP Pick Routing, and Exception Command Center.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/design-system.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-logo">⚡</div>
+        <div>
+          <div class="brand-title">
+            <span>Nexus</span><span class="gradient-text">WMS</span>
+            <span class="brand-tag">Autonomous Core</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center / Right Top Controls -->
+      <div class="header-actions">
+        <!-- Simulation Status Pill -->
+        <div class="sim-control-pill">
+          <span class="sim-status-dot paused"></span>
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-secondary);" class="hide-mobile">ENGINE:</span>
+          <button id="btn-toggle-sim-global" class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">
+            ▶️ Run Sim
+          </button>
+        </div>
+
+        <!-- Sound FX Toggle -->
+        <button id="btn-toggle-sound" class="btn btn-secondary btn-sm">
+          🔊 Audio ON
+        </button>
+
+        <!-- New Order Ingest -->
+        <button id="btn-open-create-order" class="btn btn-primary btn-sm">
+          + Ingest Order
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs Bar -->
+    <nav class="app-nav">
+      <div class="nav-tabs">
+        <div class="tab-item active" data-tab="orders" id="nav-tab-orders">
+          <span>🛒 Orders & Prioritization</span>
+        </div>
+        <div class="tab-item" data-tab="inventory" id="nav-tab-inventory">
+          <span>📦 Inventory & Stock</span>
+        </div>
+        <div class="tab-item" data-tab="twin" id="nav-tab-twin">
+          <span>🗺️ 2D Digital Twin & Routes</span>
+        </div>
+        <div class="tab-item" data-tab="picker" id="nav-tab-picker">
+          <span>📱 Handheld Scanner</span>
+          <span id="badge-tab-picker" class="tab-badge" style="display: none;">0</span>
+        </div>
+        <div class="tab-item" data-tab="packing" id="nav-tab-packing">
+          <span>📦 Packing & QC Gate</span>
+          <span id="badge-tab-packing" class="tab-badge" style="display: none;">0</span>
+        </div>
+        <div class="tab-item" data-tab="exceptions" id="nav-tab-exceptions">
+          <span>🚨 Exception Center</span>
+          <span id="badge-tab-exceptions" class="tab-badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">0</span>
+        </div>
+        <div class="tab-item" data-tab="dispatch" id="nav-tab-dispatch">
+          <span>🚚 Carrier Dispatch & Docks</span>
+          <span id="badge-tab-dispatch" class="tab-badge" style="display: none;">0</span>
+        </div>
+        <div class="tab-item" data-tab="analytics" id="nav-tab-analytics">
+          <span>📊 Analytics & AI Copilot</span>
+        </div>
+        <div class="tab-item" data-tab="sandbox" id="nav-tab-sandbox">
+          <span style="color: var(--brand-primary); font-weight: 700;">⚡ Hackathon Sandbox</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+      <!-- ================= 1. ORDERS & PRIORITIZATION TAB ================= -->
+      <section id="view-orders" class="tab-view active">
+        <!-- Quick Stats Ribbon -->
+        <div class="stats-ribbon">
+          <div class="stat-item">
+            <span class="stat-item-label">Active Orders:</span>
+            <span class="stat-item-val text-cyan">5 In Pipeline</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-item-label">Priority Scoring Model:</span>
+            <span class="stat-item-val" style="color: #c084fc;">Multi-Factor (Tier + SLA + Value)</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-item-label">Shortage Arbitration:</span>
+            <span class="stat-item-val" style="color: #fbbf24;">Autonomous Heuristic</span>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h2 style="font-size: 1.25rem;">Order Management & Autonomous Allocation Engine</h2>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">
+                Real-time priority-ranked orders with automated stock reservation and SLA countdown monitoring.
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="window.nexusApp.renderOrdersTab()">
+                🔄 Refresh Queue
+              </button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order # / SLA</th>
+                  <th>Customer & Tier</th>
+                  <th>Priority Score</th>
+                  <th>Order Items / SKUs</th>
+                  <th>Fulfillment Status</th>
+                  <th style="text-align: right;">Decision Action</th>
+                </tr>
+              </thead>
+              <tbody id="orders-table-tbody">
+                <!-- Dynamically Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. INVENTORY & STOCK MONITORING TAB ================= -->
+      <section id="view-inventory" class="tab-view">
+        <div class="stats-ribbon">
+          <div class="stat-item">
+            <span class="stat-item-label">Warehouse Zones:</span>
+            <span class="stat-item-val text-cyan">4 Dedicated Zones (A, B, C, D)</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-item-label">Storage Locations:</span>
+            <span class="stat-item-val">64 Bins Monitored</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-item-label">Accuracy Rate:</span>
+            <span class="stat-item-val" style="color: #10b981;">99.8%</span>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h2 style="font-size: 1.25rem;">Multi-Zone Inventory Telemetry & Stock Allocation</h2>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">
+                Physical on-hand vs allocated stock, safety thresholds, batch numbers, and reorder triggers.
+              </p>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>SKU / Barcode</th>
+                  <th>Product Details & Climate</th>
+                  <th>Bin / Zone</th>
+                  <th style="min-width: 180px;">Stock Levels (On-Hand / Alloc / Avail)</th>
+                  <th>Status & ROP</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-table-tbody">
+                <!-- Dynamically Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. 2D DIGITAL TWIN & PICK ROUTES ================= -->
+      <section id="view-twin" class="tab-view">
+        <div class="grid-twin-layout">
+          <!-- Main SVG Map -->
+          <div class="twin-canvas-card">
+            <div class="twin-toolbar">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-weight: 700; font-size: 0.95rem; color: #fff;">Warehouse Floor Digital Twin</span>
+                <span class="badge badge-cyan">Real-time Telemetry</span>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button id="btn-toggle-heatmap" class="btn btn-secondary btn-sm">
+                  🔥 Toggle Heatmap
+                </button>
+              </div>
+            </div>
+
+            <div id="warehouse-twin-canvas-wrapper" class="twin-svg-container">
+              <!-- SVG map rendered via warehouse-twin.js -->
+            </div>
+          </div>
+
+          <!-- Digital Twin Sidebar -->
+          <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <!-- TSP Pick Path Optimizer Card -->
+            <div class="glass-panel" style="padding: 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <h3 style="font-size: 1rem;">Pick Route Optimizer</h3>
+                <span class="badge badge-purple">TSP Heuristic</span>
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                Calculates optimal traveling sequence across bins to minimize picker walking distance.
+              </p>
+
+              <div style="background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+                  <span style="color: var(--text-secondary);">Distance Saved:</span>
+                  <strong style="color: #10b981;">38% Less Travel</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px;">
+                  <span style="color: var(--text-secondary);">Time Saved per Wave:</span>
+                  <strong style="color: var(--brand-primary);">6.4 Minutes</strong>
+                </div>
+              </div>
+
+              <div style="font-size: 0.75rem; color: var(--text-muted);">
+                💡 Click any bin on the floor map to inspect live SKU capacity and batch details.
+              </div>
+            </div>
+
+            <!-- Active Pickers & AGVs -->
+            <div class="glass-panel" style="padding: 1.25rem;">
+              <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Active Warehouse Personnel & Bots</h3>
+              <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.85rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-tertiary); padding: 0.5rem 0.75rem; border-radius: var(--radius-md);">
+                  <div>
+                    <div style="font-weight: 700; color: #fff;">Alex Mercer</div>
+                    <div style="font-size: 0.75rem; color: var(--brand-secondary);">Zone A • FMCG Picker</div>
+                  </div>
+                  <span class="badge badge-success">PICKING</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-tertiary); padding: 0.5rem 0.75rem; border-radius: var(--radius-md);">
+                  <div>
+                    <div style="font-weight: 700; color: #fff;">Maya Lin</div>
+                    <div style="font-size: 0.75rem; color: var(--brand-secondary);">Zone C • Cold Chain</div>
+                  </div>
+                  <span class="badge badge-success">PICKING</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-tertiary); padding: 0.5rem 0.75rem; border-radius: var(--radius-md);">
+                  <div>
+                    <div style="font-weight: 700; color: #c084fc;">AGV-Bot 01</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Zone D • Electronics Vault</div>
+                  </div>
+                  <span class="badge badge-cyan">AUTONOMOUS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. HANDHELD PICKER TERMINAL ================= -->
+      <section id="view-picker" class="tab-view">
+        <div id="picker-terminal-wrapper">
+          <!-- Rendered via picker-terminal.js -->
+        </div>
+      </section>
+
+      <!-- ================= 5. PACKING STATION & QC GATE ================= -->
+      <section id="view-packing" class="tab-view">
+        <div id="packing-station-wrapper">
+          <!-- Rendered via packing-station.js -->
+        </div>
+      </section>
+
+      <!-- ================= 6. EXCEPTION COMMAND CENTER ================= -->
+      <section id="view-exceptions" class="tab-view">
+        <div id="exception-center-wrapper">
+          <!-- Rendered via exception-center.js -->
+        </div>
+      </section>
+
+      <!-- ================= 7. CARRIER DISPATCH & DOCK GATES ================= -->
+      <section id="view-dispatch" class="tab-view">
+        <div id="dispatch-dock-wrapper">
+          <!-- Rendered via dispatch-dock.js -->
+        </div>
+      </section>
+
+      <!-- ================= 8. OPERATIONAL ANALYTICS & AI COPILOT ================= -->
+      <section id="view-analytics" class="tab-view">
+        <div id="analytics-cockpit-wrapper">
+          <!-- Rendered via analytics.js -->
+        </div>
+      </section>
+
+      <!-- ================= 9. HACKATHON DEMO SANDBOX ================= -->
+      <section id="view-sandbox" class="tab-view">
+        <div id="chaos-simulator-wrapper">
+          <!-- Rendered via chaos-simulator.js -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Reusable Global Modal Container -->
+  <div id="generic-modal" class="modal-backdrop">
+    <div class="modal-content modal-content-xl">
+      <div class="modal-header">
+        <h3 id="generic-modal-title" class="modal-title">Modal Header</h3>
+        <button id="generic-modal-close" class="btn btn-secondary btn-icon" style="border: none;">✕</button>
+      </div>
+      <div id="generic-modal-body" class="modal-body">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Application Bootstrap Scripts -->
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/state.js"></script>
+  <script type="module" src="js/decision-engine.js"></script>
+  <script type="module" src="js/warehouse-twin.js"></script>
+  <script type="module" src="js/picker-terminal.js"></script>
+  <script type="module" src="js/packing-station.js"></script>
+  <script type="module" src="js/exception-center.js"></script>
+  <script type="module" src="js/dispatch-dock.js"></script>
+  <script type="module" src="js/analytics.js"></script>
+  <script type="module" src="js/chaos-simulator.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
